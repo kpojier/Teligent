@@ -9,10 +9,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -41,5 +43,15 @@ public class AppTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status",is("UP")));
+
+        // Controller test method
+        MvcResult result = mockMvc.perform(get("/test"))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertEquals(result.getResponse().getContentAsString(), "test");
+
+        // Front controller method
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk());
     }
 }

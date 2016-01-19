@@ -5,12 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  *
  * @author Max Zhuravlov
  */
 @SpringBootApplication
+@ComponentScan("ru.teligent.controllers")
 public class Application {
 
     /**
