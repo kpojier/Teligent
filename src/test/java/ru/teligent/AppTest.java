@@ -41,5 +41,8 @@ public class AppTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status",is("UP")));
+
+        mockMvc.perform(get("/test"))
+                .andExpect(status().isOk());
     }
 }
