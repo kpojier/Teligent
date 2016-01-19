@@ -6,13 +6,28 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * Main App controller
  * @author Max Zhuravlov
  */
 @Controller
-@RequestMapping("test")
+@RequestMapping("")
 public class HomeController {
 
+    /**
+     * Get Weather info
+     * @return weather info object
+     */
     @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public String getWeatherInfo() {
+        return "";
+    }
+
+    /**
+     * Test method
+     * @return "test" string to check controller health
+     */
+    @RequestMapping(value = "test", method = RequestMethod.GET)
     @ResponseBody
     public String getTest() {
         return "test";
