@@ -12,10 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
-import ru.teligent.models.City;
-import ru.teligent.models.ForecastItem;
-import ru.teligent.models.TemperatureInfo;
-import ru.teligent.models.Weather;
+import ru.teligent.models.*;
 import ru.teligent.services.RestWeatherLoader;
 
 import java.time.LocalDateTime;
@@ -117,11 +114,12 @@ public class AppTest {
 
         // Weather Forecast model
         WeatherForecast forecast = new WeatherForecast();
+        assertNotNull(forecast.getForecastsList());
         forecast.setCity(city);
         forecast.setForecastsList(Collections.singletonList(forecastItem));
         assertEquals(forecast.getCity(), city);
         assertEquals(forecast.getForecastsList().size(), 1);
-        assertEquals(forecast.getForecastsList().getTimestamp(), TIMESTAMP);
+        assertEquals(forecast.getForecastsList().get(0).getTimestamp(), TIMESTAMP);
     }
 
     @Test
