@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
 import ru.teligent.models.TemperatureInfo;
+import ru.teligent.models.Weather;
 
 import java.util.Random;
 
@@ -87,7 +88,7 @@ public class AppTest {
         weather.setTempInfo(temperature);
 
         assertEquals(CITY_NAME, weather.getCityName());
-        assertEquals(weather.getTempInfo().getTemp(), temperature.getTemp());
-        assertEquals(weather.getTempInfo().getTemp(), TEMP_VALUE);
+        assertEquals(weather.getTempInfo().getTemp(), temperature.getTemp(), 0);
+        assertEquals(weather.getTempInfo().getTemp(), TEMP_VALUE, 0);
     }
 }
