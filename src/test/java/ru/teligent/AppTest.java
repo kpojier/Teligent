@@ -19,6 +19,7 @@ import ru.teligent.models.Weather;
 import ru.teligent.services.RestWeatherLoader;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -114,6 +115,13 @@ public class AppTest {
         assertEquals(city.getName(), CITY_NAME);
         assertEquals(city.getId(), TEST_CITY_ID);
 
+        // Weather Forecast model
+        WeatherForecast forecast = new WeatherForecast();
+        forecast.setCity(city);
+        forecast.setForecastsList(Collections.singletonList(forecastItem));
+        assertEquals(forecast.getCity(), city);
+        assertEquals(forecast.getForecastsList().size(), 1);
+        assertEquals(forecast.getForecastsList().getTimestamp(), TIMESTAMP);
     }
 
     @Test
