@@ -5,7 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import ru.teligent.services.RestWeatherLoader;
 
 /**
  *
@@ -29,6 +31,16 @@ public class Application {
                 .bannerMode(Banner.Mode.OFF)
                 .sources(Application.class)
                 .run(args);
+    }
+
+    /**
+     * Get weather loader service
+     * @return configured loader service
+     */
+    @Bean
+    public RestWeatherLoader restWeatherLoader() {
+        RestWeatherLoader restWeatherLoader = new RestWeatherLoader();
+        return restWeatherLoader;
     }
 
 }

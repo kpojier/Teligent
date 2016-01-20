@@ -12,6 +12,7 @@ public class Weather {
 
     @JsonProperty("name")
     private String cityName;
+    @JsonProperty("main")
     private TemperatureInfo tempInfo;
 
     public String getCityName() {
