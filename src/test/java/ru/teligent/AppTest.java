@@ -105,6 +105,14 @@ public class AppTest {
         assertEquals(forecastItem.getTimestamp(), TIMESTAMP);
         assertEquals(forecastItem.getTempInfo().getTemp(), temperature.getTemp(), 0);
 
+        // City model
+        long TEST_CITY_ID = 542420;
+        City city = new City();
+        city.setName(CITY_NAME);
+        city.setId(TEST_CITY_ID);
+        assertEquals(city.getName(), CITY_NAME);
+        assertEquals(city.getId(), TEST_CITY_ID);
+
     }
 
     @Test
