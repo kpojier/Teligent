@@ -8,6 +8,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import ru.teligent.services.RestWeatherLoader;
+import ru.teligent.services.WeatherLoader;
 
 /**
  *
@@ -38,7 +39,7 @@ public class Application {
      * @return configured loader service
      */
     @Bean
-    public RestWeatherLoader restWeatherLoader() {
+    public WeatherLoader restWeatherLoader() {
         RestWeatherLoader restWeatherLoader = new RestWeatherLoader();
         return restWeatherLoader;
     }

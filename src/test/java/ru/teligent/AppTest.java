@@ -14,6 +14,7 @@ import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
 import ru.teligent.models.*;
 import ru.teligent.services.RestWeatherLoader;
+import ru.teligent.services.WeatherLoader;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -39,7 +40,7 @@ public class AppTest {
     protected WebApplicationContext wac;
     private MockMvc mockMvc;
     @Autowired
-    RestWeatherLoader restLoader;
+    WeatherLoader weatherLoader;
 
     @Before
     public void setUp() {
@@ -128,14 +129,14 @@ public class AppTest {
         final String COUNTRY_NAME = "ru";
 
         // Load current weather
-        Weather weather = restLoader.loadCurrentWeather(CITY_NAME, COUNTRY_NAME);
+        Weather weather = weatherLoader.loadCurrentWeather(CITY_NAME, COUNTRY_NAME);
         assertNotNull(weather);
         assertEquals(weather.getCityName(), CITY_NAME);
         assertTrue(weather.getTempInfo().getTemp() >= weather.getTempInfo().getMinTemp());
         assertTrue(weather.getTempInfo().getTemp() <= weather.getTempInfo().getMaxTemp());
 
         // Load weather forecast
-        WeatherForecast forecast = restLoader.loadWeatherForecast(CITY_NAME, COUNTRY_NAME);
+        WeatherForecast forecast = weatherLoader.loadWeatherForecast(CITY_NAME, COUNTRY_NAME);
         assertNotNull(forecast);
         assertEquals(forecast.getCity().getName(), CITY_NAME);
         assertTrue(forecast.getForecastsList().size() > 0);
