@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
+import ru.teligent.models.TemperatureInfo;
 
 import java.util.Random;
 
@@ -71,12 +72,12 @@ public class AppTest {
         assertTrue(TEMP_VALUE     >= MIN_TEMP_VALUE);
         assertTrue(TEMP_VALUE     <= MAX_TEMP_VALUE);
 
-        TemperatureInfo temperature = new Temperature();
+        TemperatureInfo temperature = new TemperatureInfo();
         temperature.setMaxTemp(MAX_TEMP_VALUE);
         temperature.setMinTemp(MIN_TEMP_VALUE);
         temperature.setTemp(TEMP_VALUE);
-        assertEquals(TEMP_VALUE, weatherInfo.getTemp());
-        assertEquals(MAX_TEMP_VALUE, weatherInfo.getMaxTemp());
-        assertEquals(MIN_TEMP_VALUE, weatherInfo.getMinTemp());
+        assertEquals(TEMP_VALUE, temperature.getTemp(), 0);
+        assertEquals(MAX_TEMP_VALUE, temperature.getMaxTemp(), 0);
+        assertEquals(MIN_TEMP_VALUE, temperature.getMinTemp(), 0);
     }
 }
