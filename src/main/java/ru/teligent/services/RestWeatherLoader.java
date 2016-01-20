@@ -9,7 +9,9 @@ import ru.teligent.models.Weather;
  */
 public class RestWeatherLoader extends RestTemplate {
 
+    private static final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s,%s&mode=json&units=metric&appid=2de143494c0b295cca9337e1e96b00e0";
+
     public Weather loadCurrentWeather(String cityName, String countryCode) {
-        return getForObject("http://api.openweathermap.org/data/2.5/weather?q=KRASNODAR,RU&mode=json&units=metric&appid=2de143494c0b295cca9337e1e96b00e0", Weather.class);
+        return getForObject(String.format(WEATHER_URL, cityName, countryCode), Weather.class);
     }
 }
