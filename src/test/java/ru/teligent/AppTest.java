@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
 
+import java.util.Random;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,5 +55,15 @@ public class AppTest {
         // Front controller method
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void modelTest() throws Exception {
+        Random r = new Random();
+        final double TEMP_VALUE = 50 * r.nextDouble();
+
+        WeatherInfo weatherInfo = new WeatherInfo();
+        weatherInfo.setTemp(TEMP_VALUE);
+        assertEquals(tempValue, weatherInfo.getTemp());
     }
 }
