@@ -16,6 +16,7 @@ import ru.teligent.models.TemperatureInfo;
 import ru.teligent.models.Weather;
 import ru.teligent.services.RestWeatherLoader;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -85,7 +86,7 @@ public class AppTest {
         assertEquals(MAX_TEMP_VALUE, temperature.getMaxTemp(), 0);
         assertEquals(MIN_TEMP_VALUE, temperature.getMinTemp(), 0);
 
-        // Weather mode
+        // Weather model
         final String CITY_NAME = "Krasnodar";
         Weather weather = new Weather();
         weather.setCityName(CITY_NAME);
@@ -94,6 +95,15 @@ public class AppTest {
         assertEquals(CITY_NAME, weather.getCityName());
         assertEquals(weather.getTempInfo().getTemp(), temperature.getTemp(), 0);
         assertEquals(weather.getTempInfo().getTemp(), TEMP_VALUE, 0);
+
+        // Weather Forecast item
+        long TIMESTAMP = System.currentTimeMillis();
+        ForecastItem forecastItem = new ForecastItem();
+        forecastItem.setTimestamp(TIMESTAMP);
+        forecastItem.setTempInfo(temperature);
+        assertEquals(forecastItem.getTimestamp(), TIMESTAMP);
+        assertEquals(forecastItem.getTempInfo().getTemp(), temperature.getTemp(), 0);
+
     }
 
     @Test
