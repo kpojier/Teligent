@@ -79,5 +79,15 @@ public class AppTest {
         assertEquals(TEMP_VALUE, temperature.getTemp(), 0);
         assertEquals(MAX_TEMP_VALUE, temperature.getMaxTemp(), 0);
         assertEquals(MIN_TEMP_VALUE, temperature.getMinTemp(), 0);
+
+        // Weather mode
+        final String CITY_NAME = "Krasnodar";
+        Weather weather = new Weather();
+        weather.setCityName(CITY_NAME);
+        weather.setTempInfo(temperature);
+
+        assertEquals(CITY_NAME, weather.getCityName());
+        assertEquals(weather.getTempInfo().getTemp(), temperature.getTemp());
+        assertEquals(weather.getTempInfo().getTemp(), TEMP_VALUE);
     }
 }
