@@ -14,11 +14,13 @@ import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
 import ru.teligent.models.TemperatureInfo;
 import ru.teligent.models.Weather;
+import ru.teligent.services.RestWeatherLoader;
 
 import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -35,6 +37,8 @@ public class AppTest {
     @Autowired
     protected WebApplicationContext wac;
     private MockMvc mockMvc;
+    @Autowired
+    RestWeatherLoader restLoader;
 
     @Before
     public void setUp() {
@@ -90,5 +94,16 @@ public class AppTest {
         assertEquals(CITY_NAME, weather.getCityName());
         assertEquals(weather.getTempInfo().getTemp(), temperature.getTemp(), 0);
         assertEquals(weather.getTempInfo().getTemp(), TEMP_VALUE, 0);
+    }
+
+    @Test
+    public void requestsTest() throws Exception {
+        final String CITY_NAME    = "Krasnodar";
+        final String COUNTRY_NAME = "ru";
+        Weather weather = restLoader.loadCurrentWeather(CITY_NAME, COUNTRY_NAME);
+        assertNotNull(weather);
+        assertEquals(weather.getCityName(), CITY_NAME);
+        assertTrue(weather.getTempInfo().getTemp() >= weather.getTempInfo().getMinTemp());
+        assertTrue(weather.getTempInfo().getTemp() <= weather.getTempInfo().getMaxTemp());
     }
 }
