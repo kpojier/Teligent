@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
+import ru.teligent.models.City;
 import ru.teligent.models.ForecastItem;
 import ru.teligent.models.TemperatureInfo;
 import ru.teligent.models.Weather;
