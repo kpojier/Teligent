@@ -17,6 +17,7 @@ import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -59,11 +60,23 @@ public class AppTest {
 
     @Test
     public void modelTest() throws Exception {
-        Random r = new Random();
-        final double TEMP_VALUE = 50 * r.nextDouble();
 
-        WeatherInfo weatherInfo = new WeatherInfo();
-        weatherInfo.setTemp(TEMP_VALUE);
-        assertEquals(tempValue, weatherInfo.getTemp());
+        // Temperature
+        Random r = new Random();
+        final double MAX_TEMP_VALUE  = -50 + 100 * r.nextDouble();
+        final double MIN_TEMP_VALUE  = -50 + (MAX_TEMP_VALUE + 50) * r.nextDouble();
+        final double TEMP_VALUE = MIN_TEMP_VALUE + (MAX_TEMP_VALUE - MIN_TEMP_VALUE) * r.nextDouble();
+
+        assertTrue(MAX_TEMP_VALUE >= MIN_TEMP_VALUE);
+        assertTrue(TEMP_VALUE     >= MIN_TEMP_VALUE);
+        assertTrue(TEMP_VALUE     <= MAX_TEMP_VALUE);
+
+        TemperatureInfo temperature = new Temperature();
+        temperature.setMaxTemp(MAX_TEMP_VALUE);
+        temperature.setMinTemp(MIN_TEMP_VALUE);
+        temperature.setTemp(TEMP_VALUE);
+        assertEquals(TEMP_VALUE, weatherInfo.getTemp());
+        assertEquals(MAX_TEMP_VALUE, weatherInfo.getMaxTemp());
+        assertEquals(MIN_TEMP_VALUE, weatherInfo.getMinTemp());
     }
 }
