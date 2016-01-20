@@ -126,10 +126,18 @@ public class AppTest {
     public void requestsTest() throws Exception {
         final String CITY_NAME    = "Moscow";
         final String COUNTRY_NAME = "ru";
+
+        // Load current weather
         Weather weather = restLoader.loadCurrentWeather(CITY_NAME, COUNTRY_NAME);
         assertNotNull(weather);
         assertEquals(weather.getCityName(), CITY_NAME);
         assertTrue(weather.getTempInfo().getTemp() >= weather.getTempInfo().getMinTemp());
         assertTrue(weather.getTempInfo().getTemp() <= weather.getTempInfo().getMaxTemp());
+
+        // Load weather forecast
+        WeatherForecast forecast = restLoader.loadWeatherForecast(CITY_NAME, COUNTRY_NAME);
+        assertNotNull(forecast);
+        assertEquals(forecast.getCity().getName(), CITY_NAME);
+        assertTrue(forecast.getForecastsList().size() > 0);
     }
 }
