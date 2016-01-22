@@ -1,6 +1,5 @@
 package ru.teligent.controllers;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -12,11 +11,9 @@ import ru.teligent.models.ForecastItem;
 import ru.teligent.models.Weather;
 import ru.teligent.models.WeatherForecast;
 import ru.teligent.models.WeatherResponse;
-import ru.teligent.services.RestWeatherLoader;
 import ru.teligent.services.WeatherLoader;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Comparator;
 
 /**
  * Main App controller
@@ -67,8 +64,10 @@ public class HomeController {
                 return;
             }
             // Load forecast
+            long TIME_THRESHOLD = System.currentTimeMillis() + 1000*60*60*24*3;
             WeatherForecast forecast = loader.loadWeatherForecast(city, country);
             ForecastItem minForecast = forecast.getForecastsList().stream()
+                    .filter(item -> item.getTimestamp() <= TIME_THRESHOLD)
                     .min((o1, o2) -> Double.compare(o1.getTempInfo().getTemp(), o2.getTempInfo().getTemp()))
                     .get();
 
