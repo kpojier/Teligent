@@ -50,7 +50,7 @@ public class HomeController {
     }
 
 
-    @RequestMapping(value = "weather/{country}/{city}", method = RequestMethod.GET)
+    @RequestMapping(value = "{country}/{city}", method = RequestMethod.GET)
     @ResponseBody
     public void getWeather(HttpServletResponse response,
                              @PathVariable String country,

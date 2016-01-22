@@ -101,7 +101,7 @@ public class AppTest {
 
         for (City city:cities) {
             // Load current weather & min forecast
-            MvcResult weatherResult =  mockMvc.perform(get("/weather/"+city.getCountry()+"/"+city.getName()+"/"))
+            MvcResult weatherResult =  mockMvc.perform(get("/"+city.getCountry()+"/"+city.getName()+"/"))
                     .andExpect(status().isOk())
                     .andReturn();
             String weatherResultJson  = weatherResult.getResponse().getContentAsString();
