@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.teligent.models.ForecastItem;
 import ru.teligent.models.Weather;
 import ru.teligent.models.WeatherForecast;
+import ru.teligent.models.WeatherResponse;
 import ru.teligent.services.RestWeatherLoader;
 import ru.teligent.services.WeatherLoader;
 
@@ -59,10 +60,10 @@ public class HomeController {
 
             // Load weather
             Weather weather = loader.loadCurrentWeather(city, country);
-            JSONObject jsonResponse = new JSONObject();
+
             if (!weather.getCityName().equalsIgnoreCase(city) || !weather.getSysInfo().getCountry().equalsIgnoreCase(country)) {
-                jsonResponse.put("state", HttpStatus.BAD_REQUEST.value());
-                jsonResponse.put("errorMessage","Can't find "+city+" in database. Wrong city name or country code");
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.getWriter().write("Can't find "+city+" in database. Wrong city name or country code");
                 return;
             }
             // Load forecast
@@ -71,13 +72,15 @@ public class HomeController {
                     .min((o1, o2) -> Double.compare(o1.getTempInfo().getTemp(), o2.getTempInfo().getTemp()))
                     .get();
 
-            jsonResponse.put("city"   , weather.getCityName());
-            jsonResponse.put("country", weather.getSysInfo().getCountry());
-            jsonResponse.put("currentTemp", weather.getTempInfo().getTemp());
-            jsonResponse.put("forecastTemp", minForecast.getTempInfo().getTemp());
-            jsonResponse.put("state", 200);
-            response.getWriter().write(jsonResponse.toString());
+            WeatherResponse weatherResponse = new WeatherResponse(
+                    weather.getCityName(),
+                    weather.getSysInfo().getCountry(),
+                    weather.getTempInfo().getTemp(),
+                    minForecast.getTempInfo().getTemp());
+
+            response.getWriter().write(weatherResponse.toString());
         } catch (Exception e) {
+            e.printStackTrace();
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
