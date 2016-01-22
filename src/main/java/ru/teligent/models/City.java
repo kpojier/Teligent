@@ -11,6 +11,7 @@ public class City {
 
     private String name;
     private long id;
+    private String country;
 
     public String getName() {
         return name;
@@ -26,5 +27,13 @@ public class City {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }
