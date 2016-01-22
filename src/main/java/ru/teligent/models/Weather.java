@@ -14,6 +14,8 @@ public class Weather {
     private String cityName;
     @JsonProperty("main")
     private TemperatureInfo tempInfo;
+    @JsonProperty("sys")
+    private SystemInfo sysInfo;
 
     public String getCityName() {
         return cityName;
@@ -29,5 +31,13 @@ public class Weather {
 
     public void setTempInfo(TemperatureInfo tempInfo) {
         this.tempInfo = tempInfo;
+    }
+
+    public SystemInfo getSysInfo() {
+        return sysInfo;
+    }
+
+    public void setSysInfo(SystemInfo sysInfo) {
+        this.sysInfo = sysInfo;
     }
 }
