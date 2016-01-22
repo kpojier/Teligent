@@ -103,6 +103,7 @@ public class AppTest {
 
         // Weather model
         final String CITY_NAME = "Krasnodar";
+        final String COUNTRY_NAME = "ru";
         Weather weather = new Weather();
         weather.setCityName(CITY_NAME);
         weather.setTempInfo(temperature);
@@ -124,8 +125,10 @@ public class AppTest {
         City city = new City();
         city.setName(CITY_NAME);
         city.setId(TEST_CITY_ID);
+        city.setCountry(COUNTRY_NAME);
         assertEquals(city.getName(), CITY_NAME);
         assertEquals(city.getId(), TEST_CITY_ID);
+        assertEquals(city.getCountry(), COUNTRY_NAME);
 
         // Weather Forecast model
         WeatherForecast forecast = new WeatherForecast();
