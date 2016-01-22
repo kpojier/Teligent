@@ -1,6 +1,7 @@
 package ru.teligent.services;
 
 import org.springframework.web.client.RestTemplate;
+import ru.teligent.models.SystemInfo;
 import ru.teligent.models.Weather;
 import ru.teligent.models.WeatherForecast;
 

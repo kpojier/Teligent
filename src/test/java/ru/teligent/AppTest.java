@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
 import ru.teligent.models.*;
+import ru.teligent.services.LRUCache;
 import ru.teligent.services.RestWeatherLoader;
 import ru.teligent.services.WeatherLoader;
 
@@ -53,13 +54,27 @@ public class AppTest {
         cities.add(new City("Stavropol"  , "ru"));
         cities.add(new City("Novosibirsk", "ru"));
         cities.add(new City("Vladivostok", "ru"));
+        cities.add(new City("Amsterdam"  , "nl"));
         cities.add(new City("Chita"      , "ru"));
         cities.add(new City("Donetsk"    , "ua"));
         cities.add(new City("Minsk"      , "by"));
         cities.add(new City("London"     , "gb"));
         cities.add(new City("London"     , "us"));
-        cities.add(new City("Moscow"     , "us"));
+        cities.add(new City("Amsterdam"  , "nl"));
+        cities.add(new City("Moscow"     , "ru"));
+        cities.add(new City("Krasnodar"  , "ru"));
+        cities.add(new City("Kaluga"     , "ru"));
+        cities.add(new City("Amsterdam"  , "nl"));
+        cities.add(new City("Bari"       , "it"));
+        cities.add(new City("Stavropol"  , "ru"));
+        cities.add(new City("Novosibirsk", "ru"));
+        cities.add(new City("Vladivostok", "ru"));
         this.mockMvc = webAppContextSetup(wac).build();
+    }
+
+    @Test
+    public void cacheTest() {
+
     }
 
     @Test
@@ -155,6 +170,22 @@ public class AppTest {
         assertEquals(forecast.getCity(), city);
         assertEquals(forecast.getForecastsList().size(), 1);
         assertEquals(forecast.getForecastsList().get(0).getTimestamp(), TIMESTAMP);
+
+        // Weather response
+        double CURR_TEMP = 12.0;
+        double MIN_TEMP  = -10.2;
+        WeatherResponse response = new WeatherResponse(
+                CITY_NAME,
+                COUNTRY_NAME,
+                CURR_TEMP,
+                MIN_TEMP
+        );
+        assertTrue(response.getCity().equalsIgnoreCase(CITY_NAME));
+        assertTrue(response.getCountry().equalsIgnoreCase(COUNTRY_NAME));
+        assertEquals(CURR_TEMP, response.getCurrentTemp(), 0);
+        assertEquals(MIN_TEMP, response.getForecastTemp(), 0);
+        assertTrue(response.getTimestamp() <= System.currentTimeMillis());
+
     }
 
     @Test
