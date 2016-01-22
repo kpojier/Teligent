@@ -1,6 +1,5 @@
 package ru.teligent.controllers;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -11,11 +10,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.teligent.models.ForecastItem;
 import ru.teligent.models.Weather;
 import ru.teligent.models.WeatherForecast;
-import ru.teligent.services.RestWeatherLoader;
+import ru.teligent.models.WeatherResponse;
+import ru.teligent.services.LRUCache;
 import ru.teligent.services.WeatherLoader;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Comparator;
 
 /**
  * Main App controller
@@ -27,6 +26,8 @@ public class HomeController {
 
     @Autowired
     WeatherLoader loader;
+    @Autowired
+    LRUCache<WeatherResponse> weatherResponseLRUCache;
 
     /**
      * Get Weather info
@@ -49,7 +50,7 @@ public class HomeController {
     }
 
 
-    @RequestMapping(value = "weather/{country}/{city}", method = RequestMethod.GET)
+    @RequestMapping(value = "{country}/{city}", method = RequestMethod.GET)
     @ResponseBody
     public void getWeather(HttpServletResponse response,
                              @PathVariable String country,
@@ -57,27 +58,40 @@ public class HomeController {
         try {
             response.setContentType("application/json");
 
-            // Load weather
-            Weather weather = loader.loadCurrentWeather(city, country);
-            JSONObject jsonResponse = new JSONObject();
-            if (!weather.getCityName().equalsIgnoreCase(city) || !weather.getSysInfo().getCountry().equalsIgnoreCase(country)) {
-                jsonResponse.put("state", HttpStatus.BAD_REQUEST.value());
-                jsonResponse.put("errorMessage","Can't find "+city+" in database. Wrong city name or country code");
-                return;
-            }
-            // Load forecast
-            WeatherForecast forecast = loader.loadWeatherForecast(city, country);
-            ForecastItem minForecast = forecast.getForecastsList().stream()
-                    .min((o1, o2) -> Double.compare(o1.getTempInfo().getTemp(), o2.getTempInfo().getTemp()))
-                    .get();
+            WeatherResponse weatherResponse;
+            String cacheKey = city.toUpperCase()+"|"+country.toUpperCase();
+            if (weatherResponseLRUCache.containsActual(cacheKey)) {
+                weatherResponse = weatherResponseLRUCache.get(cacheKey);
+                System.out.println("LOAD FROM CACHE");
+            } else {
+                // Load weather
+                Weather weather = loader.loadCurrentWeather(city, country);
 
-            jsonResponse.put("city"   , weather.getCityName());
-            jsonResponse.put("country", weather.getSysInfo().getCountry());
-            jsonResponse.put("currentTemp", weather.getTempInfo().getTemp());
-            jsonResponse.put("forecastTemp", minForecast.getTempInfo().getTemp());
-            jsonResponse.put("state", 200);
-            response.getWriter().write(jsonResponse.toString());
+                if (!weather.getCityName().equalsIgnoreCase(city) || !weather.getSysInfo().getCountry().equalsIgnoreCase(country)) {
+                    response.setStatus(HttpStatus.BAD_REQUEST.value());
+                    response.getWriter().write("Can't find "+city+" in database. Wrong city name or country code");
+                    return;
+                }
+                // Load forecast
+                long TIME_THRESHOLD = System.currentTimeMillis() + 1000*60*60*24*3;
+                WeatherForecast forecast = loader.loadWeatherForecast(city, country);
+                ForecastItem minForecast = forecast.getForecastsList().stream()
+                        .filter(item -> item.getTimestamp() <= TIME_THRESHOLD)
+                        .min((o1, o2) -> Double.compare(o1.getTempInfo().getTemp(), o2.getTempInfo().getTemp()))
+                        .get();
+
+                weatherResponse = new WeatherResponse(
+                        weather.getCityName(),
+                        weather.getSysInfo().getCountry(),
+                        weather.getTempInfo().getTemp(),
+                        minForecast.getTempInfo().getTemp());
+                weatherResponseLRUCache.put(cacheKey, weatherResponse);
+                System.out.println("LOAD FROM REQUEST");
+            }
+
+            response.getWriter().write(weatherResponse.toString());
         } catch (Exception e) {
+            e.printStackTrace();
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
