@@ -23,7 +23,9 @@ import ru.teligent.services.WeatherLoader;
 public class Application {
 
     @Value("${cache.size}")
-    private int cacheSize = 25;
+    private int cacheSize;
+    @Value("${cache.live}")
+    private long cacheLiveTime;
 
     /**
      * Enter point
@@ -48,7 +50,7 @@ public class Application {
 
     @Bean
     public LRUCache<WeatherResponse> weatherResponseLRUCache() {
-        LRUCache<WeatherResponse> cache = new LRUCache<>(cacheSize);
+        LRUCache<WeatherResponse> cache = new LRUCache<>(cacheSize, cacheLiveTime);
         return cache;
     }
 
