@@ -1,7 +1,5 @@
 package ru.teligent.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +23,7 @@ import ru.teligent.services.WeatherLoader;
 public class Application {
 
     @Value("${cache.size}")
-    private int cacheSize;
+    private int cacheSize = 25;
 
     /**
      * Enter point
@@ -50,7 +48,6 @@ public class Application {
 
     @Bean
     public LRUCache<WeatherResponse> weatherResponseLRUCache() {
-        System.out.println("Generate cache "+cacheSize);
         LRUCache<WeatherResponse> cache = new LRUCache<>(cacheSize);
         return cache;
     }
