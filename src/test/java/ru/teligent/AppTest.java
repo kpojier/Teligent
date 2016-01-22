@@ -54,11 +54,21 @@ public class AppTest {
         cities.add(new City("Stavropol"  , "ru"));
         cities.add(new City("Novosibirsk", "ru"));
         cities.add(new City("Vladivostok", "ru"));
+        cities.add(new City("Amsterdam"  , "nl"));
         cities.add(new City("Chita"      , "ru"));
         cities.add(new City("Donetsk"    , "ua"));
         cities.add(new City("Minsk"      , "by"));
         cities.add(new City("London"     , "gb"));
         cities.add(new City("London"     , "us"));
+        cities.add(new City("Amsterdam"  , "nl"));
+        cities.add(new City("Moscow"     , "ru"));
+        cities.add(new City("Krasnodar"  , "ru"));
+        cities.add(new City("Kaluga"     , "ru"));
+        cities.add(new City("Amsterdam"  , "nl"));
+        cities.add(new City("Bari"       , "it"));
+        cities.add(new City("Stavropol"  , "ru"));
+        cities.add(new City("Novosibirsk", "ru"));
+        cities.add(new City("Vladivostok", "ru"));
         this.mockMvc = webAppContextSetup(wac).build();
     }
 

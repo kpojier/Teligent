@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import ru.teligent.models.WeatherResponse;
+import ru.teligent.services.LRUCache;
 import ru.teligent.services.RestWeatherLoader;
 import ru.teligent.services.WeatherLoader;
 
@@ -42,6 +44,12 @@ public class Application {
     public WeatherLoader restWeatherLoader() {
         RestWeatherLoader restWeatherLoader = new RestWeatherLoader();
         return restWeatherLoader;
+    }
+
+    @Bean
+    public LRUCache<WeatherResponse> weatherResponseLRUCache() {
+        LRUCache<WeatherResponse> cache = new LRUCache<>(20);
+        return cache;
     }
 
 }
