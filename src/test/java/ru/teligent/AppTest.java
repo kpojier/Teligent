@@ -80,9 +80,6 @@ public class AppTest {
     @Test
     public void controllersTest() throws Exception {
 
-        final String CITY_NAME    = "Moscow";
-        final String COUNTRY_CODE = "ru";
-
         // Check health
         mockMvc.perform(get("/health"))
                 .andExpect(status().isOk())
@@ -101,7 +98,7 @@ public class AppTest {
 
         for (City city:cities) {
             // Load current weather & min forecast
-            MvcResult weatherResult =  mockMvc.perform(get("/weather/"+city.getCountry()+"/"+city.getName()+"/"))
+            MvcResult weatherResult =  mockMvc.perform(get("/"+city.getCountry()+"/"+city.getName()+"/"))
                     .andExpect(status().isOk())
                     .andReturn();
             String weatherResultJson  = weatherResult.getResponse().getContentAsString();
@@ -133,16 +130,25 @@ public class AppTest {
         assertEquals(MAX_TEMP_VALUE, temperature.getMaxTemp(), 0);
         assertEquals(MIN_TEMP_VALUE, temperature.getMinTemp(), 0);
 
-        // Weather model
+        // Weather SystemInfo model
         final String CITY_NAME = "Krasnodar";
+        final long CITY_ID = 524901;
         final String COUNTRY_NAME = "ru";
+        SystemInfo systemInfo = new SystemInfo();
+        systemInfo.setCountry(COUNTRY_NAME);
+        systemInfo.setId(CITY_ID);
+
+        // Weather model
+
         Weather weather = new Weather();
         weather.setCityName(CITY_NAME);
         weather.setTempInfo(temperature);
+        weather.setSysInfo(systemInfo);
 
         assertEquals(CITY_NAME, weather.getCityName());
         assertEquals(weather.getTempInfo().getTemp(), temperature.getTemp(), 0);
         assertEquals(weather.getTempInfo().getTemp(), TEMP_VALUE, 0);
+        assertEquals(weather.getSysInfo().getId(), CITY_ID);
 
         // Weather Forecast item
         long TIMESTAMP = System.currentTimeMillis();

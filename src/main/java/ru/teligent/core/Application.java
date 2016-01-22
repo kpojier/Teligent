@@ -1,12 +1,13 @@
 package ru.teligent.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import ru.teligent.models.WeatherResponse;
 import ru.teligent.services.LRUCache;
 import ru.teligent.services.RestWeatherLoader;
@@ -18,12 +19,13 @@ import ru.teligent.services.WeatherLoader;
  */
 @SpringBootApplication
 @ComponentScan("ru.teligent.controllers")
+@PropertySource("classpath:app.properties")
 public class Application {
 
-    /**
-     * App logger
-     */
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
+    @Value("${cache.size}")
+    private int cacheSize;
+    @Value("${cache.live}")
+    private long cacheLiveTime;
 
     /**
      * Enter point
@@ -42,14 +44,17 @@ public class Application {
      */
     @Bean
     public WeatherLoader restWeatherLoader() {
-        RestWeatherLoader restWeatherLoader = new RestWeatherLoader();
-        return restWeatherLoader;
+        return new RestWeatherLoader();
     }
 
     @Bean
     public LRUCache<WeatherResponse> weatherResponseLRUCache() {
-        LRUCache<WeatherResponse> cache = new LRUCache<>(20);
-        return cache;
+        return new LRUCache<>(cacheSize, cacheLiveTime);
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 
 }

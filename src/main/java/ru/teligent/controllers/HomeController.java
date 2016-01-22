@@ -50,7 +50,7 @@ public class HomeController {
     }
 
 
-    @RequestMapping(value = "weather/{country}/{city}", method = RequestMethod.GET)
+    @RequestMapping(value = "{country}/{city}", method = RequestMethod.GET)
     @ResponseBody
     public void getWeather(HttpServletResponse response,
                              @PathVariable String country,
@@ -60,7 +60,7 @@ public class HomeController {
 
             WeatherResponse weatherResponse;
             String cacheKey = city.toUpperCase()+"|"+country.toUpperCase();
-            if (weatherResponseLRUCache.containsKey(cacheKey)) {
+            if (weatherResponseLRUCache.containsActual(cacheKey)) {
                 weatherResponse = weatherResponseLRUCache.get(cacheKey);
                 System.out.println("LOAD FROM CACHE");
             } else {
