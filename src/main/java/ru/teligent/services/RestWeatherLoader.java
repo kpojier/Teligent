@@ -10,8 +10,8 @@ import ru.teligent.models.WeatherForecast;
  */
 public class RestWeatherLoader extends RestTemplate implements WeatherLoader {
 
-    private static final String WEATHER_URL  = "http://api.openweathermap.org/data/2.5/weather?q=%s,%s&mode=json&units=metric&appid=2de143494c0b295cca9337e1e96b00e0";
-    private static final String FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast?q=%s,%s&mode=json&appid=2de143494c0b295cca9337e1e96b00e0";
+    private static final String WEATHER_URL  = "http://api.openweathermap.org/data/2.5/weather?q=%s,%s&mode=json&units=metric&appid=f949dad4641e63f6a36bd7f9fe26589b";
+    private static final String FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast?q=%s,%s&mode=json&appid=f949dad4641e63f6a36bd7f9fe26589b";
 
     @Override
     public Weather loadCurrentWeather(String cityName, String countryCode) {
