@@ -28,11 +28,6 @@ public class Application {
     private int cacheSize;
 
     /**
-     * App logger
-     */
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
-
-    /**
      * Enter point
      * @param args arguments params
      */
