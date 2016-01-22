@@ -44,14 +44,12 @@ public class Application {
      */
     @Bean
     public WeatherLoader restWeatherLoader() {
-        RestWeatherLoader restWeatherLoader = new RestWeatherLoader();
-        return restWeatherLoader;
+        return new RestWeatherLoader();
     }
 
     @Bean
     public LRUCache<WeatherResponse> weatherResponseLRUCache() {
-        LRUCache<WeatherResponse> cache = new LRUCache<>(cacheSize, cacheLiveTime);
-        return cache;
+        return new LRUCache<>(cacheSize, cacheLiveTime);
     }
 
     @Bean
