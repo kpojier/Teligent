@@ -1,5 +1,7 @@
 package ru.teligent;
 
+import com.jayway.jsonpath.JsonPath;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,9 +23,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -49,6 +49,10 @@ public class AppTest {
 
     @Test
     public void controllersTest() throws Exception {
+
+        final String CITY_NAME    = "Moscow";
+        final String COUNTRY_CODE = "ru";
+
         // Check health
         mockMvc.perform(get("/health"))
                 .andExpect(status().isOk())
@@ -64,6 +68,16 @@ public class AppTest {
         // Front controller method
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk());
+
+        // Load current weather & min forecast
+        MvcResult weatherResult =  mockMvc.perform(get("/weather/"+COUNTRY_CODE+"/"+CITY_NAME+"/"))
+                                                .andExpect(status().isOk())
+                                                .andReturn();
+        String weatherResultJson  = weatherResult.getResponse().getContentAsString();
+        assertTrue(JsonPath.parse(weatherResultJson).read("$.city"   , String.class).equalsIgnoreCase(CITY_NAME));
+        assertTrue(JsonPath.parse(weatherResultJson).read("$.country", String.class).equalsIgnoreCase(COUNTRY_CODE));
+        assertTrue(JsonPath.parse(weatherResultJson).read("$.currentTemp", Double.class) > -50);
+        assertTrue(JsonPath.parse(weatherResultJson).read("$.forecastTemp", Double.class) > -50);
     }
 
     @Test
