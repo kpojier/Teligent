@@ -1,6 +1,7 @@
 package ru.teligent.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,9 @@ public class HomeController {
 
     @Autowired
     WeatherLoader loader;
+
+    @Value("${cache.live}")
+    private static final long THRESHOLD = 0;
 
     /**
      * Get Weather info
@@ -69,7 +73,7 @@ public class HomeController {
                     return;
                 }
                 // Load forecast
-                long TIME_THRESHOLD = System.currentTimeMillis() + 1000*60*60*24*3;
+                long TIME_THRESHOLD = System.currentTimeMillis() + HomeController.THRESHOLD;
                 WeatherForecast forecast = loader.loadWeatherForecast(city, country);
                 ForecastItem minForecast = forecast.getForecastsList().stream()
                         .filter(item -> item.getTimestamp() <= TIME_THRESHOLD)
