@@ -1,5 +1,6 @@
 package ru.teligent.services;
 
+import org.springframework.stereotype.Component;
 import ru.teligent.models.Weather;
 import ru.teligent.models.WeatherForecast;
 
@@ -7,6 +8,7 @@ import ru.teligent.models.WeatherForecast;
  * Weather loader
  * @author Max Zhuravlov
  */
+@Component
 public interface WeatherLoader {
 
     Weather loadCurrentWeather(String cityName, String countryCode);

@@ -1,5 +1,6 @@
 package ru.teligent.services;
 
+import org.springframework.stereotype.Component;
 import ru.teligent.models.WeatherResponse;
 
 import java.util.LinkedHashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
  * Last Recent User cache
  * @author Max Zhuravlov
  */
+@Component
 public class LRUCache<T extends WeatherResponse> extends LinkedHashMap<String,T> {
 
     private int  cacheSize;

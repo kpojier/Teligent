@@ -12,7 +12,6 @@ import ru.teligent.models.Weather;
 import ru.teligent.models.WeatherForecast;
 import ru.teligent.models.WeatherResponse;
 import ru.teligent.services.CacheFilter;
-import ru.teligent.services.LRUCache;
 import ru.teligent.services.WeatherLoader;
 
 import javax.servlet.http.HttpServletRequest;
