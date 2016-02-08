@@ -62,6 +62,7 @@ public class HomeController {
             String cacheKey = city.toUpperCase()+"|"+country.toUpperCase();
             if (weatherResponseLRUCache.containsActual(cacheKey)) {
                 weatherResponse = weatherResponseLRUCache.get(cacheKey);
+                weatherResponse.setCached(true);
                 System.out.println("LOAD FROM CACHE");
             } else {
                 // Load weather
@@ -84,7 +85,8 @@ public class HomeController {
                         weather.getCityName(),
                         weather.getSysInfo().getCountry(),
                         weather.getTempInfo().getTemp(),
-                        minForecast.getTempInfo().getTemp());
+                        minForecast.getTempInfo().getTemp(),
+                        false);
                 weatherResponseLRUCache.put(cacheKey, weatherResponse);
                 System.out.println("LOAD FROM REQUEST");
             }
