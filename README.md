@@ -6,9 +6,9 @@ Spring Boot standalone app implementing [OpenWeatherMap](http://api.openweatherm
   
   * Build by [Maven] (https://maven.apache.org) `mvn clean package`  
   
-  * Run app `java -jar target/Weather-0.3.0.jar`
+  * Run app `java -jar target/Weather-0.4.0.jar`
   
-  You can download prebuilded jar file by <a href="https://www.dropbox.com/s/lwxktwxw46jzjxs/Weather-0.3.0.jar?dl=0" target="_blank">direct link</a>
+  You can download prebuilded jar file by <a href="https://dl.dropboxusercontent.com/u/10957282/Weather-0.4.0.jar" target="_blank">direct link</a>
 
 ## How to use
   * Open your browser with url `http:\\localhost:8080\`
