@@ -11,7 +11,7 @@ Spring Boot standalone app implementing [OpenWeatherMap](http://api.openweatherm
   You can download prebuilded jar file by <a href="https://dl.dropboxusercontent.com/u/10957282/Weather-0.4.0.jar" target="_blank">direct link</a>
 
 ## How to use
-  * Open your browser with url `http:\\localhost:8080\`
+  * Open your browser with url `http://localhost:8080/`
   * For get weather forecast for your city you need add country code in [ISO 3166](https://en.wikipedia.org/wiki/ISO_3166) format and city name. 
   For example `http://localhost:8080/ru/Krasnodar` for Russian Federation city Krasnodar
   
