@@ -96,6 +96,30 @@ public class AppTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk());
 
+        // Check non cache
+        City testCacheCity = cities.get(0);
+        MvcResult cacheResult =  mockMvc.perform(get("/"+testCacheCity.getCountry()+"/"+testCacheCity.getName()+"/"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String cacheResultJson  = cacheResult.getResponse().getContentAsString();
+        assertTrue(JsonPath.parse(cacheResultJson).read("$.city"   , String.class).equalsIgnoreCase(testCacheCity.getName()));
+        assertTrue(JsonPath.parse(cacheResultJson).read("$.country", String.class).equalsIgnoreCase(testCacheCity.getCountry()));
+        assertFalse(JsonPath.parse(cacheResultJson).read("$.isCached", Boolean.class));
+        double testForecastTemp = JsonPath.parse(cacheResultJson).read("$.forecastTemp", Double.class);
+        double testCurrentTemp  = JsonPath.parse(cacheResultJson).read("$.currentTemp" , Double.class);
+
+        // Check with cache
+        cacheResult =  mockMvc.perform(get("/"+testCacheCity.getCountry()+"/"+testCacheCity.getName()+"/"))
+                .andExpect(status().isOk())
+                .andReturn();
+        cacheResultJson  = cacheResult.getResponse().getContentAsString();
+        assertTrue(JsonPath.parse(cacheResultJson).read("$.city"   , String.class).equalsIgnoreCase(testCacheCity.getName()));
+        assertTrue(JsonPath.parse(cacheResultJson).read("$.country", String.class).equalsIgnoreCase(testCacheCity.getCountry()));
+        assertTrue(JsonPath.parse(cacheResultJson).read("$.isCached", Boolean.class));
+        assertTrue(JsonPath.parse(cacheResultJson).read("$.forecastTemp", Double.class) == testForecastTemp);
+        assertTrue(JsonPath.parse(cacheResultJson).read("$.currentTemp" , Double.class) == testCurrentTemp);
+
+
         for (City city:cities) {
             // Load current weather & min forecast
             MvcResult weatherResult =  mockMvc.perform(get("/"+city.getCountry()+"/"+city.getName()+"/"))
@@ -184,7 +208,8 @@ public class AppTest {
                 CITY_NAME,
                 COUNTRY_NAME,
                 CURR_TEMP,
-                MIN_TEMP
+                MIN_TEMP,
+                false
         );
         assertTrue(response.getCity().equalsIgnoreCase(CITY_NAME));
         assertTrue(response.getCountry().equalsIgnoreCase(COUNTRY_NAME));
