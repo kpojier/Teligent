@@ -9,9 +9,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import ru.teligent.models.WeatherResponse;
+import ru.teligent.services.CacheFilter;
 import ru.teligent.services.LRUCache;
 import ru.teligent.services.RestWeatherLoader;
 import ru.teligent.services.WeatherLoader;
+
+import javax.servlet.Filter;
 
 /**
  *
@@ -50,6 +53,11 @@ public class Application {
     @Bean
     public LRUCache<WeatherResponse> weatherResponseLRUCache() {
         return new LRUCache<>(cacheSize, cacheLiveTime);
+    }
+
+    @Bean
+    public Filter cacheFilter() {
+        return new CacheFilter();
     }
 
     @Bean

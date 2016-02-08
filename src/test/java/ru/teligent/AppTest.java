@@ -1,13 +1,13 @@
 package ru.teligent;
 
 import com.jayway.jsonpath.JsonPath;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,11 +15,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
 import ru.teligent.models.*;
-import ru.teligent.services.LRUCache;
-import ru.teligent.services.RestWeatherLoader;
 import ru.teligent.services.WeatherLoader;
 
-import java.time.LocalDateTime;
+import javax.servlet.Filter;
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +46,7 @@ public class AppTest {
     WeatherLoader weatherLoader;
 
     @Before
-    public void setUp() {
+    public void setUp() throws ServletException {
         cities.add(new City("Moscow"     , "ru"));
         cities.add(new City("Krasnodar"  , "ru"));
         cities.add(new City("Kaluga"     , "ru"));
@@ -69,7 +68,9 @@ public class AppTest {
         cities.add(new City("Stavropol"  , "ru"));
         cities.add(new City("Novosibirsk", "ru"));
         cities.add(new City("Vladivostok", "ru"));
-        this.mockMvc = webAppContextSetup(wac).build();
+
+        this.mockMvc = webAppContextSetup(wac)
+                                    .build();
     }
 
     @Test
@@ -95,30 +96,6 @@ public class AppTest {
         // Front controller method
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk());
-
-        // Check non cache
-        City testCacheCity = cities.get(0);
-        MvcResult cacheResult =  mockMvc.perform(get("/"+testCacheCity.getCountry()+"/"+testCacheCity.getName()+"/"))
-                .andExpect(status().isOk())
-                .andReturn();
-        String cacheResultJson  = cacheResult.getResponse().getContentAsString();
-        assertTrue(JsonPath.parse(cacheResultJson).read("$.city"   , String.class).equalsIgnoreCase(testCacheCity.getName()));
-        assertTrue(JsonPath.parse(cacheResultJson).read("$.country", String.class).equalsIgnoreCase(testCacheCity.getCountry()));
-        assertFalse(JsonPath.parse(cacheResultJson).read("$.isCached", Boolean.class));
-        double testForecastTemp = JsonPath.parse(cacheResultJson).read("$.forecastTemp", Double.class);
-        double testCurrentTemp  = JsonPath.parse(cacheResultJson).read("$.currentTemp" , Double.class);
-
-        // Check with cache
-        cacheResult =  mockMvc.perform(get("/"+testCacheCity.getCountry()+"/"+testCacheCity.getName()+"/"))
-                .andExpect(status().isOk())
-                .andReturn();
-        cacheResultJson  = cacheResult.getResponse().getContentAsString();
-        assertTrue(JsonPath.parse(cacheResultJson).read("$.city"   , String.class).equalsIgnoreCase(testCacheCity.getName()));
-        assertTrue(JsonPath.parse(cacheResultJson).read("$.country", String.class).equalsIgnoreCase(testCacheCity.getCountry()));
-        assertTrue(JsonPath.parse(cacheResultJson).read("$.isCached", Boolean.class));
-        assertTrue(JsonPath.parse(cacheResultJson).read("$.forecastTemp", Double.class) == testForecastTemp);
-        assertTrue(JsonPath.parse(cacheResultJson).read("$.currentTemp" , Double.class) == testCurrentTemp);
-
 
         for (City city:cities) {
             // Load current weather & min forecast

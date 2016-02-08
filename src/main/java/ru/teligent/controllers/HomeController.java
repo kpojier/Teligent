@@ -11,9 +11,11 @@ import ru.teligent.models.ForecastItem;
 import ru.teligent.models.Weather;
 import ru.teligent.models.WeatherForecast;
 import ru.teligent.models.WeatherResponse;
+import ru.teligent.services.CacheFilter;
 import ru.teligent.services.LRUCache;
 import ru.teligent.services.WeatherLoader;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -26,8 +28,6 @@ public class HomeController {
 
     @Autowired
     WeatherLoader loader;
-    @Autowired
-    LRUCache<WeatherResponse> weatherResponseLRUCache;
 
     /**
      * Get Weather info
@@ -52,22 +52,18 @@ public class HomeController {
 
     @RequestMapping(value = "{country}/{city}", method = RequestMethod.GET)
     @ResponseBody
-    public void getWeather(HttpServletResponse response,
-                             @PathVariable String country,
-                             @PathVariable String city) {
+    public void getWeather( HttpServletRequest  request,
+                            HttpServletResponse response,
+                            @PathVariable String country,
+                            @PathVariable String city) {
         try {
             response.setContentType("application/json");
-
-            WeatherResponse weatherResponse;
-            String cacheKey = city.toUpperCase()+"|"+country.toUpperCase();
-            if (weatherResponseLRUCache.containsActual(cacheKey)) {
-                weatherResponse = weatherResponseLRUCache.get(cacheKey);
+            WeatherResponse weatherResponse = (WeatherResponse)request.getAttribute(CacheFilter.REQ_ATT_NAME);
+            if (weatherResponse != null) {
                 weatherResponse.setCached(true);
-                System.out.println("LOAD FROM CACHE");
             } else {
                 // Load weather
                 Weather weather = loader.loadCurrentWeather(city, country);
-
                 if (!weather.getCityName().equalsIgnoreCase(city) || !weather.getSysInfo().getCountry().equalsIgnoreCase(country)) {
                     response.setStatus(HttpStatus.BAD_REQUEST.value());
                     response.getWriter().write("Can't find "+city+" in database. Wrong city name or country code");
@@ -87,8 +83,7 @@ public class HomeController {
                         weather.getTempInfo().getTemp(),
                         minForecast.getTempInfo().getTemp(),
                         false);
-                weatherResponseLRUCache.put(cacheKey, weatherResponse);
-                System.out.println("LOAD FROM REQUEST");
+                request.setAttribute(CacheFilter.RES_ATT_NAME, weatherResponse);
             }
 
             response.getWriter().write(weatherResponse.toString());
