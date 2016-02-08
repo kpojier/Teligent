@@ -14,13 +14,15 @@ public class WeatherResponse {
     private double currentTemp;
     private double forecastTemp;
     private long timestamp;
+    private boolean isCached;
 
-    public WeatherResponse(String city, String country, double currentTemp, double forecastTemp) {
+    public WeatherResponse(String city, String country, double currentTemp, double forecastTemp, boolean isCached) {
         this.city = city;
         this.country = country;
         this.currentTemp = currentTemp;
         this.forecastTemp = forecastTemp;
         this.timestamp = System.currentTimeMillis();
+        this.isCached = isCached;
     }
 
     public String getCity() {
@@ -43,6 +45,14 @@ public class WeatherResponse {
         return timestamp;
     }
 
+    public boolean isCached() {
+        return isCached;
+    }
+
+    public void setCached(boolean cached) {
+        isCached = cached;
+    }
+
     @Override
     public String toString() {
         JSONObject jsonResponse = new JSONObject();
@@ -50,6 +60,7 @@ public class WeatherResponse {
         jsonResponse.put("country"     , this.country);
         jsonResponse.put("currentTemp" , this.currentTemp);
         jsonResponse.put("forecastTemp", this.forecastTemp);
+        jsonResponse.put("isCached"    , this.isCached);
         return jsonResponse.toString();
     }
 }

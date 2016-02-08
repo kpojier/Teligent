@@ -1,6 +1,7 @@
 package ru.teligent.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +12,10 @@ import ru.teligent.models.ForecastItem;
 import ru.teligent.models.Weather;
 import ru.teligent.models.WeatherForecast;
 import ru.teligent.models.WeatherResponse;
-import ru.teligent.services.LRUCache;
+import ru.teligent.services.CacheFilter;
 import ru.teligent.services.WeatherLoader;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -26,8 +28,9 @@ public class HomeController {
 
     @Autowired
     WeatherLoader loader;
-    @Autowired
-    LRUCache<WeatherResponse> weatherResponseLRUCache;
+
+    @Value("${cache.live}")
+    private static final long THRESHOLD = 0;
 
     /**
      * Get Weather info
@@ -52,28 +55,25 @@ public class HomeController {
 
     @RequestMapping(value = "{country}/{city}", method = RequestMethod.GET)
     @ResponseBody
-    public void getWeather(HttpServletResponse response,
-                             @PathVariable String country,
-                             @PathVariable String city) {
+    public void getWeather( HttpServletRequest  request,
+                            HttpServletResponse response,
+                            @PathVariable String country,
+                            @PathVariable String city) {
         try {
             response.setContentType("application/json");
-
-            WeatherResponse weatherResponse;
-            String cacheKey = city.toUpperCase()+"|"+country.toUpperCase();
-            if (weatherResponseLRUCache.containsActual(cacheKey)) {
-                weatherResponse = weatherResponseLRUCache.get(cacheKey);
-                System.out.println("LOAD FROM CACHE");
+            WeatherResponse weatherResponse = (WeatherResponse)request.getAttribute(CacheFilter.REQ_ATT_NAME);
+            if (weatherResponse != null) {
+                weatherResponse.setCached(true);
             } else {
                 // Load weather
                 Weather weather = loader.loadCurrentWeather(city, country);
-
                 if (!weather.getCityName().equalsIgnoreCase(city) || !weather.getSysInfo().getCountry().equalsIgnoreCase(country)) {
                     response.setStatus(HttpStatus.BAD_REQUEST.value());
                     response.getWriter().write("Can't find "+city+" in database. Wrong city name or country code");
                     return;
                 }
                 // Load forecast
-                long TIME_THRESHOLD = System.currentTimeMillis() + 1000*60*60*24*3;
+                long TIME_THRESHOLD = System.currentTimeMillis() + HomeController.THRESHOLD;
                 WeatherForecast forecast = loader.loadWeatherForecast(city, country);
                 ForecastItem minForecast = forecast.getForecastsList().stream()
                         .filter(item -> item.getTimestamp() <= TIME_THRESHOLD)
@@ -84,9 +84,9 @@ public class HomeController {
                         weather.getCityName(),
                         weather.getSysInfo().getCountry(),
                         weather.getTempInfo().getTemp(),
-                        minForecast.getTempInfo().getTemp());
-                weatherResponseLRUCache.put(cacheKey, weatherResponse);
-                System.out.println("LOAD FROM REQUEST");
+                        minForecast.getTempInfo().getTemp(),
+                        false);
+                request.setAttribute(CacheFilter.RES_ATT_NAME, weatherResponse);
             }
 
             response.getWriter().write(weatherResponse.toString());

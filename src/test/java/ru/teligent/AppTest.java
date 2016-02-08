@@ -1,7 +1,6 @@
 package ru.teligent;
 
 import com.jayway.jsonpath.JsonPath;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +14,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import ru.teligent.core.Application;
 import ru.teligent.models.*;
-import ru.teligent.services.LRUCache;
-import ru.teligent.services.RestWeatherLoader;
 import ru.teligent.services.WeatherLoader;
 
-import java.time.LocalDateTime;
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +44,7 @@ public class AppTest {
     WeatherLoader weatherLoader;
 
     @Before
-    public void setUp() {
+    public void setUp() throws ServletException {
         cities.add(new City("Moscow"     , "ru"));
         cities.add(new City("Krasnodar"  , "ru"));
         cities.add(new City("Kaluga"     , "ru"));
@@ -69,7 +66,9 @@ public class AppTest {
         cities.add(new City("Stavropol"  , "ru"));
         cities.add(new City("Novosibirsk", "ru"));
         cities.add(new City("Vladivostok", "ru"));
-        this.mockMvc = webAppContextSetup(wac).build();
+
+        this.mockMvc = webAppContextSetup(wac)
+                                    .build();
     }
 
     @Test
@@ -184,13 +183,15 @@ public class AppTest {
                 CITY_NAME,
                 COUNTRY_NAME,
                 CURR_TEMP,
-                MIN_TEMP
+                MIN_TEMP,
+                false
         );
         assertTrue(response.getCity().equalsIgnoreCase(CITY_NAME));
         assertTrue(response.getCountry().equalsIgnoreCase(COUNTRY_NAME));
         assertEquals(CURR_TEMP, response.getCurrentTemp(), 0);
         assertEquals(MIN_TEMP, response.getForecastTemp(), 0);
         assertTrue(response.getTimestamp() <= System.currentTimeMillis());
+        assertFalse(response.isCached());
 
     }
 
