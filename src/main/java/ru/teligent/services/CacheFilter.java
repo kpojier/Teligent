@@ -19,7 +19,7 @@ public class CacheFilter implements Filter {
     public static final String RES_ATT_NAME = "ru.teligent.services.result";
 
     @Autowired
-    LRUCache<WeatherResponse> weatherResponseLRUCache;
+    LRUCache<String, WeatherResponse> weatherResponseLRUCache;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
