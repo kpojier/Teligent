@@ -49,7 +49,7 @@ public class Application {
 
     @Bean
     public LRUCache<String, WeatherResponse> weatherResponseLRUCache() {
-        return new LRUCacheImpl<>(cacheSize, cacheLiveTime);
+        return new LRUCacheConcurrencyImplementation<>(cacheSize, cacheLiveTime);
     }
 
     @Bean

@@ -1,6 +1,5 @@
 package ru.teligent.services;
 
-import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import org.springframework.stereotype.Component;
 import ru.teligent.models.WeatherResponse;
 
